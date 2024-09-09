@@ -91,19 +91,6 @@ def draw_graphics(data, counts, bin_edges):
     plt.show()
 
 
-def check_Kolmogorov(data, type):
-    def cdf_theoretical(x):
-        return stats.norm.cdf(x, loc=0, scale=1)
-    res = kstest(np.array(data), cdf_theoretical)
-    data2 = poisson(5, 100)
-    res1 = kstest(data2, cdf_theoretical)
-
-    if res < 0.05:
-        print(f'Закон распределения не {type}')
-        return False
-    print(f'Закон распределения подходит')
-    return True
-
 def check_Pirson(data, type):
     if (type == 'normal'):
         stat, p = stats.normaltest(data)
@@ -161,7 +148,7 @@ def main():
     intervals, counts, bin_edges = div_for_intervals(cleaned_data, s - 1)
     count_variances(intervals, cleaned_data)
 
-    # check_Kolmogorov(cleaned_data, 'norm')
+
     check_Pirson(data, 'normal')
     check_Pirson(data, 'uniform')
 
