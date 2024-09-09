@@ -104,6 +104,38 @@ def check_Kolmogorov(data, type):
     print(f'Закон распределения подходит')
     return True
 
+def check_Pirson(data, type):
+    if (type == 'normal'):
+        stat, p = stats.normaltest(data)
+
+        print('Статистика χ²=%.3f, P-значение=%.3f' % (stat, p)) 
+        alpha = 0.05
+
+        if p > alpha:
+            print('Принять гипотезу о нормальности')
+        else:
+            print('Отклонить гипотезу о нормальности')
+    elif (type == 'uniform'):
+        # 1. Создание гистограммы для оценки распределения
+        hist, bin_edges = np.histogram(data, bins=np.arange(15, 35), density=False)
+
+        # 2. Ожидаемая частота
+        expected = np.full(hist.shape, len(data) / len(hist))
+
+        # 3. Выполнение теста χ²
+        chi2_stat, p_value = stats.chisquare(hist, f_exp=expected)
+
+        # Вывод результатов
+        print('Статистика χ²=%.3f, P-значение=%.3f' % (chi2_stat, p_value))
+
+        # Интерпретация результата
+        alpha = 0.05  # Уровень значимости
+        if p_value > alpha:
+            print('Принять гипотезу о равномерности') 
+        else:       
+            print('Отклонить гипотезу о равномерности')
+
+    print()
 
 def main():
     data = [
@@ -129,7 +161,9 @@ def main():
     intervals, counts, bin_edges = div_for_intervals(cleaned_data, s - 1)
     count_variances(intervals, cleaned_data)
 
-    check_Kolmogorov(cleaned_data, 'norm')
+    # check_Kolmogorov(cleaned_data, 'norm')
+    check_Pirson(data, 'normal')
+    check_Pirson(data, 'uniform')
 
 if __name__ == '__main__':
     main()
